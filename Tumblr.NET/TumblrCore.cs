@@ -17,20 +17,39 @@ namespace TumblrNET
         private const string USER_AGENT = "Tumblr.NET";
 
         private readonly HttpClient _httpClient;
+        
+        public string? ConsumerKey { get; set; }
+        
+        public string? ConsumerSecret { get; set; }
 
         public string? OAuthAccessToken { get; set; }
         
         public string? OAuthRefreshToken { get; set; }
+        
+        public AuthenticationRequirement MaximumAvailableAuthentication
+        {
+            get
+            {
+                if (ConsumerKey != null && ConsumerSecret != null)
+                    return AuthenticationRequirement.OAuth;
+                
+                if (ConsumerKey != null)
+                    return AuthenticationRequirement.ApiKey;
+
+                return AuthenticationRequirement.None;
+            }
+        }
 
         public TumblrCore(TumblrConfiguration? config = null)
         {
+            config ??= new();
             var webRequestHandler = new HttpClientHandler();
 
             webRequestHandler.AllowAutoRedirect = false;
             _httpClient = new(webRequestHandler);
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", config?.UserAgent ?? default(TumblrConfiguration)!.UserAgent);
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", config.UserAgent);
         }
 
         public async Task<ResponseWrapper<BlogInfoResponse>> GetBlogInfoAsync(TumblrConfiguration config,
@@ -108,9 +127,9 @@ namespace TumblrNET
 
             if (request.Auth == AuthenticationRequirement.OAuth)
             {
-                if (config.MaximumAvailableAuthentication >= AuthenticationRequirement.OAuth)
+                if (MaximumAvailableAuthentication >= AuthenticationRequirement.OAuth)
                     requestMsg.Headers.Authorization =
-                        new AuthenticationHeaderValue(config.OAuthScheme, config.OAuthAccessToken);
+                        new AuthenticationHeaderValue("Bearer", OAuthAccessToken);
                 else
                     throw new AuthenticationException(
                         "This request requires OAuth authentication but the configuration is missing proper OAuth login details.");
@@ -136,8 +155,8 @@ namespace TumblrNET
 
             if (request.Auth == AuthenticationRequirement.ApiKey)
             {
-                if (config.ApiKeyValid)
-                    uriParams.AddWithConverters("api_key", config.ApiKey, options);
+                if (MaximumAvailableAuthentication >= AuthenticationRequirement.ApiKey)
+                    uriParams.AddWithConverters("api_key", ConsumerKey, options);
                 else
                     throw new AuthenticationException(
                         "This request requires an API Key to authenticate but one was not provided.");

@@ -1,4 +1,5 @@
 ﻿using TumblrNET;
+using TumblrNET.Models.Authentication;
 
 internal class Program
 {
@@ -10,8 +11,8 @@ internal class Program
 
     private static async Task TestClient()
     {
-        var client = new Tumblr();
-        client.TrySetApiKey(await File.ReadAllTextAsync("apikey"));
+        var client = new Tumblr(await File.ReadAllTextAsync("apikey"));
+        var uri = client.GetAuthorizationRequestUri(new [] { OAuthScope.Basic }, out var state);
         var posts = client.GetBlogPosts("enovale", out var blogInfo);
         var asyncPostsResponse = await client.GetBlogPostsAsync("enovale");
         await using var fileStream = File.OpenWrite("test.png");

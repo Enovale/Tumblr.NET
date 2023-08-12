@@ -4,7 +4,7 @@ using TumblrNET.Converters.Uri;
 
 namespace TumblrNET.Extensions
 {
-    internal static class NameValueCollectionExtensions
+    internal static class UriParamSerializer
     {
         public static void AddWithConverters(this NameValueCollection obj, string? name, object? value, UriParamSerializationOptions? options = null)
         {

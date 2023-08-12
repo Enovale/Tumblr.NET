@@ -1,5 +1,8 @@
 using System.Net;
 using System.Web;
+using TumblrNET.Converters.Uri;
+using TumblrNET.Extensions;
+using TumblrNET.Models.Authentication;
 using TumblrNET.Models.Common.Blog;
 using TumblrNET.Models.Common.Post;
 using TumblrNET.Models.Requests;
@@ -11,27 +14,11 @@ namespace TumblrNET
 {
     public class Tumblr
     {
+        public AuthenticationRequirement MaximumAvailableAuthentication => _core.MaximumAvailableAuthentication;
+        
         private TumblrConfiguration _tumblrConfiguration { get; set; }
-        
-        public string? ConsumerKey { get; }
-        
-        public string? ConsumerSecret { get; }
-        
-        public AuthenticationRequirement MaximumAvailableAuthentication
-        {
-            get
-            {
-                if (ConsumerKey != null && ConsumerSecret != null)
-                    return AuthenticationRequirement.OAuth;
-                
-                if (ConsumerKey != null)
-                    return AuthenticationRequirement.ApiKey;
 
-                return AuthenticationRequirement.None;
-            }
-        }
-
-        private TumblrCore _core;
+        private readonly TumblrCore _core;
 
         public Tumblr(TumblrConfiguration? config = null)
         {
@@ -41,44 +28,34 @@ namespace TumblrNET
 
         public Tumblr(string consumerKey, TumblrConfiguration? config = null) : this(config)
         {
-            ConsumerKey = consumerKey;
+            _core.ConsumerKey = consumerKey;
         }
 
         public Tumblr(string consumerKey, string consumerSecret, TumblrConfiguration? config = null)
             : this(consumerKey, config)
         {
-            ConsumerSecret = consumerSecret;
+            _core.ConsumerSecret = consumerSecret;
         }
 
-        public bool TrySetApiKey(string key)
+        public void SetOAuthToken(string accessToken, string refreshToken)
         {
-            _tumblrConfiguration.ApiKey = key;
-            _tumblrConfiguration.ApiKeyValid = true;
-
-            try
-            {
-                var test = GetBlogInfo("staff");
-                _ = test.Title;
-            }
-            catch (Exception e)
-            {
-                _tumblrConfiguration.ApiKeyValid = false;
-                return false;
-            }
-
-            _tumblrConfiguration.ApiKeyValid = true;
-            return true;
+            // TODO WIP OAuth Token
         }
 
-        public Uri GetAuthorizationRequestUri(TumblrConfiguration config, out string state)
+        public Uri GetAuthorizationRequestUri(OAuthScope[] scopes, out string state, string? redirectUrl = null)
         {
-            // TODO WIP
-            var query = HttpUtility.ParseQueryString(string.Empty);
-            query.Add("response_type", "code");
-            state = new Guid().ToString();
-            query.Add("state", state);
+            if (scopes.Length <= 0)
+                throw new ArgumentOutOfRangeException(nameof(scopes), "At least one scope must be provided.");
             
-            var builder = new UriBuilder(config.OAuthRoot + "/oauth2/authorize" + "?" + query);
+            var query = HttpUtility.ParseQueryString(string.Empty);
+            query.Add("client_id", _core.ConsumerKey);
+            query.Add("response_type", "code");
+            query.Add("scope", string.Join(' ', scopes.Select(s => UriParamSerializer.GetConvertedValue(s, new UriAttributeEnumConverter<OAuthScope>()))));
+            state = Guid.NewGuid().ToString();
+            query.Add("state", state);
+            query.Add("redirect_url", redirectUrl);
+            
+            var builder = new UriBuilder(_tumblrConfiguration.OAuthRoot + "/oauth2/authorize" + "?" + query);
             return builder.Uri;
         }
 
