@@ -42,6 +42,11 @@ namespace TumblrNET
             // TODO WIP OAuth Token
         }
 
+        public void RequestOAuthToken(string code, string? redirectUrl = null)
+        {
+            // TODO Request token (/oauth2/token) then SetOAuthToken();
+        }
+
         public Uri GetAuthorizationRequestUri(OAuthScope[] scopes, out string state, string? redirectUrl = null)
         {
             if (scopes.Length <= 0)

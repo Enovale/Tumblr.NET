@@ -30,7 +30,7 @@ namespace TumblrNET
         {
             get
             {
-                if (ConsumerKey != null && ConsumerSecret != null)
+                if (ConsumerKey != null && ConsumerSecret != null && OAuthAccessToken != null)
                     return AuthenticationRequirement.OAuth;
                 
                 if (ConsumerKey != null)
@@ -125,7 +125,7 @@ namespace TumblrNET
             var uri = GetRequestUri(config, request, options);
             var requestMsg = new HttpRequestMessage(message, uri);
 
-            if (request.Auth == AuthenticationRequirement.OAuth)
+            if (request.Auth >= AuthenticationRequirement.OAuth)
             {
                 if (MaximumAvailableAuthentication >= AuthenticationRequirement.OAuth)
                     requestMsg.Headers.Authorization =
@@ -153,7 +153,7 @@ namespace TumblrNET
         {
             var uriParams = request.GetParams(options);
 
-            if (request.Auth == AuthenticationRequirement.ApiKey)
+            if (request.Auth >= AuthenticationRequirement.ApiKey)
             {
                 if (MaximumAvailableAuthentication >= AuthenticationRequirement.ApiKey)
                     uriParams.AddWithConverters("api_key", ConsumerKey, options);
