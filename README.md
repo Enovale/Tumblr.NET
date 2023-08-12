@@ -15,8 +15,8 @@
   - [x] Models
     - [x] Generic Request Wrapper
     - [x] Generic Response Wrapper
-  - [ ] Json serializer
-  - [ ] Json de-serializer
+  - [x] Json serializer
+  - [x] Json de-serializer
 - [ ] User-facing API
   - [ ] Raw API
     - [ ] Request API
@@ -29,9 +29,9 @@
     - [ ] Activity
     - [x] Attribution
     - [x] Blocks
-    - [ ] Blog
+    - [x] Blog
     - [x] Media
-    - [ ] Post
+    - [x] Post
       - [x] Note
     - [x] Tag
   - [ ] Request Types
