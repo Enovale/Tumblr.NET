@@ -8,6 +8,11 @@
   - [x] OAuth
     - [x] OAuth login flow
     - [ ] XAuth (/oauth/access_token)
+- [ ] Exception handling
+  - [ ] Auth errors
+  - [ ] API errors
+  - [ ] Network errors
+  - [ ] Test these things
 - [ ] Post Types
   - [x] NPF
   - [ ] Legacy Posts
