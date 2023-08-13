@@ -3,7 +3,7 @@
 
 ## What's Implemented
 
-- [ ] Auth
+- [x] Auth
   - [x] API Key
   - [x] OAuth
     - [x] OAuth login flow
