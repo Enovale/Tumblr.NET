@@ -6,6 +6,12 @@ namespace TumblrNET.Models.Common.AttributionTypes
     public class PostAttribution : BlogAttribution
     {
         [JsonPropertyName("post")]
-        public required PostInfo Post { get; set; }
+        public required ShortPost Post { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            base.SetClient(client);
+            Post.SetClient(client);
+        }
     }
 }

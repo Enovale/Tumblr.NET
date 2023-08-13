@@ -3,10 +3,10 @@ using TumblrNET.Converters.Json;
 
 namespace TumblrNET.Models.Common.Blog
 {
-    public class Follower
+    public class Follower : TumblrResource
     {
         [JsonPropertyName("name")]
-        public required string Name { get; set; }
+        public required string Username { get; set; }
         
         [JsonPropertyName("following")]
         public required bool Following { get; set; }
@@ -17,5 +17,7 @@ namespace TumblrNET.Models.Common.Blog
         [JsonPropertyName("updated")]
         [JsonConverter(typeof(JsonTimestampConverter))]
         public required DateTimeOffset Updated { get; set; }
+
+        public BlogInfo RetrieveBlog() => Client.GetBlogInfo(Username);
     }
 }

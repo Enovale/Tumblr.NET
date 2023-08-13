@@ -7,5 +7,13 @@ namespace TumblrNET.Models.Responses.ResponseTypes.Blog
     {
         [JsonPropertyName("blocked_tumblelogs")]
         public required BlogInfo[] BlockedBlogs { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            foreach (var blockedBlog in BlockedBlogs)
+            {
+                blockedBlog.SetClient(client);
+            }
+        }
     }
 }

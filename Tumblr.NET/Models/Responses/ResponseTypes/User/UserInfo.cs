@@ -1,11 +1,12 @@
 using System.Text.Json.Serialization;
 using TumblrNET.Converters.Json;
+using TumblrNET.Models.Common;
 using TumblrNET.Models.Common.Blog;
 using TumblrNET.Models.Common.Post;
 
 namespace TumblrNET.Models.Responses.ResponseTypes.User
 {
-    public class UserInfo
+    public class UserInfo : TumblrResource
     {
         [JsonPropertyName("following")]
         public required int Following { get; set; }
@@ -23,5 +24,14 @@ namespace TumblrNET.Models.Responses.ResponseTypes.User
         // TODO This is another one of the million shortblog types please define or figure out a better solution
         [JsonPropertyName("blogs")]
         public required ShortBlog[] Blogs { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            base.SetClient(client);
+            foreach (var shortBlog in Blogs)
+            {
+                shortBlog.SetClient(client);
+            }
+        }
     }
 }

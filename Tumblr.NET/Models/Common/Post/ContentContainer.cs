@@ -4,7 +4,7 @@ using TumblrNET.Models.Common.Blocks.LayoutTypes;
 
 namespace TumblrNET.Models.Common.Post
 {
-    public class ContentContainer
+    public class ContentContainer : TumblrResource
     {
         [JsonPropertyName("content")]
         public required Block[] Content { get; set; }

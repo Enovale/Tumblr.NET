@@ -18,5 +18,12 @@ namespace TumblrNET.Models.Common.Post
         
         [JsonPropertyName("broken_blog_name")]
         public string? BrokenBlogName { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            base.SetClient(client);
+            Post?.SetClient(client);
+            Blog?.SetClient(client);
+        }
     }
 }

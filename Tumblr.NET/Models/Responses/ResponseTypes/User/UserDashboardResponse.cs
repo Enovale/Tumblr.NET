@@ -7,5 +7,13 @@ namespace TumblrNET.Models.Responses.ResponseTypes.User
     {
         [JsonPropertyName("posts")]
         public required PostInfo[] Posts { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            foreach (var postInfo in Posts)
+            {
+                postInfo.SetClient(client);
+            }
+        }
     }
 }

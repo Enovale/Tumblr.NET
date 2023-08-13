@@ -6,6 +6,12 @@ namespace TumblrNET.Models.Common.AttributionTypes
     public class BlogAttribution : LinkAttribution
     {
         [JsonPropertyName("blog")]
-        public required ShortBlog Blog { get; set; }
+        public required ShorterBlog Blog { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            base.SetClient(client);
+            Blog.SetClient(client);
+        }
     }
 }

@@ -10,5 +10,13 @@ namespace TumblrNET.Models.Responses.ResponseTypes.Blog
         
         [JsonPropertyName("users")]
         public required Follower[] Users { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            foreach (var follower in Users)
+            {
+                follower.SetClient(client);
+            }
+        }
     }
 }

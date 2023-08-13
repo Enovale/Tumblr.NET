@@ -7,7 +7,7 @@ namespace TumblrNET.Models.Common.AttributionTypes
     [JsonDerivedType(typeof(BlogAttribution), "blog")]
     [JsonDerivedType(typeof(PostAttribution), "post")]
     [JsonDerivedType(typeof(AppAttribution), "app")]
-    public class Attribution
+    public class Attribution : TumblrResource
     {
     }
 }

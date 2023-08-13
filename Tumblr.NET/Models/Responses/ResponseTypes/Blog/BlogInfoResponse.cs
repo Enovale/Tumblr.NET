@@ -7,5 +7,10 @@ namespace TumblrNET.Models.Responses.ResponseTypes.Blog
     {
         [JsonPropertyName("blog")]
         public required BlogInfo Blog { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            Blog.SetClient(client);
+        }
     }
 }

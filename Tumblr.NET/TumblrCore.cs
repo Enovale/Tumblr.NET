@@ -1,14 +1,18 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Security.Authentication;
 using System.Text.Json;
 using TumblrNET.Extensions;
+using TumblrNET.Models.Authentication;
 using TumblrNET.Models.Requests;
 using TumblrNET.Models.Requests.RequestTypes;
 using TumblrNET.Models.Requests.RequestTypes.Blog;
+using TumblrNET.Models.Requests.RequestTypes.User;
 using TumblrNET.Models.Responses;
 using TumblrNET.Models.Responses.ResponseTypes;
 using TumblrNET.Models.Responses.ResponseTypes.Blog;
+using TumblrNET.Models.Responses.ResponseTypes.User;
 
 namespace TumblrNET
 {
@@ -22,15 +26,13 @@ namespace TumblrNET
         
         public string? ConsumerSecret { get; set; }
 
-        public string? OAuthAccessToken { get; set; }
-        
-        public string? OAuthRefreshToken { get; set; }
+        public OAuth2State? OAuthState { get; set; }
         
         public AuthenticationRequirement MaximumAvailableAuthentication
         {
             get
             {
-                if (ConsumerKey != null && ConsumerSecret != null && OAuthAccessToken != null)
+                if (ConsumerKey != null && ConsumerSecret != null && OAuthState != null)
                     return AuthenticationRequirement.OAuth;
                 
                 if (ConsumerKey != null)
@@ -50,6 +52,13 @@ namespace TumblrNET
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("User-Agent", config.UserAgent);
+        }
+
+        public ResponseWrapper<UserInfoResponse> GetUserInfo(TumblrConfiguration config, UserInfoRequest request,
+            UriParamSerializationOptions? options = null)
+        {
+            return SendAndDeserializeRequest<UserInfoRequest, UserInfoResponse>(config, HttpMethod.Get, request,
+                options);
         }
 
         public async Task<ResponseWrapper<BlogInfoResponse>> GetBlogInfoAsync(TumblrConfiguration config,
@@ -95,6 +104,40 @@ namespace TumblrNET
                 options);
         }
 
+        public OAuth2State RequestOAuthAccessCode(TumblrConfiguration config, string code, string? redirectUri = null)
+            => RequestOAuthAccessCodeAsync(config, code, redirectUri).Result;
+
+        public async Task<OAuth2State> RequestOAuthAccessCodeAsync(TumblrConfiguration config, string code, string? redirectUri = null)
+        {
+            if (ConsumerKey == null || ConsumerSecret == null)
+                throw new InvalidOperationException($"This client instance is missing a consumer secret. Please construct the {nameof(Tumblr)} client with a key and a secret.");
+            
+            var query = new List<KeyValuePair<string, string>>
+            {
+                new("grant_type", "authorization_code"),
+                new("code", code),
+                new("client_id", ConsumerKey),
+                new("client_secret", ConsumerSecret)
+            };
+            
+            if (redirectUri != null)
+                query.Add(new("redirect_uri", redirectUri));
+            
+            var uri = new UriBuilder(config.ApiRoot + "/v2/oauth2/token" + "?" + query).ToString();
+            var content = new FormUrlEncodedContent(query);
+            var response = await _httpClient.PostAsync(uri, content);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                throw new HttpRequestException("Unauthorized request.");
+            }
+
+            var responseStr = await response.Content.ReadAsStringAsync();
+            var responseObj = JsonSerializer.Deserialize<OAuth2State>(responseStr);
+
+            return responseObj ?? throw new SerializationException("Could not properly deserialize the authorization response.");
+        }
+
         private async Task<ResponseWrapper<TResult>> SendAndDeserializeRequestAsync<TRequest, TResult>(
             TumblrConfiguration config, HttpMethod message, TRequest request,
             UriParamSerializationOptions? options = null) where TRequest : Request where TResult : Response
@@ -129,7 +172,7 @@ namespace TumblrNET
             {
                 if (MaximumAvailableAuthentication >= AuthenticationRequirement.OAuth)
                     requestMsg.Headers.Authorization =
-                        new AuthenticationHeaderValue("Bearer", OAuthAccessToken);
+                        new AuthenticationHeaderValue("Bearer", OAuthState!.AccessToken);
                 else
                     throw new AuthenticationException(
                         "This request requires OAuth authentication but the configuration is missing proper OAuth login details.");

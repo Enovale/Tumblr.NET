@@ -2,11 +2,12 @@ using System.Text.Json.Serialization;
 using TumblrNET.Converters.Json;
 using TumblrNET.Models.Common.Blocks;
 using TumblrNET.Models.Common.Blocks.LayoutTypes;
+using TumblrNET.Models.Common.Blog;
 using TumblrNET.Models.Common.Media;
 
 namespace TumblrNET.Models.Common.Post
 {
-    public class PostInfo
+    public class PostInfo : TumblrResource
     {
         [JsonPropertyName("blog_name")]
         public required string BlogName { get; set; }
@@ -201,5 +202,19 @@ namespace TumblrNET.Models.Common.Post
         
         [JsonPropertyName("answer")]
         public string? LegacyAnswer { get; set; }
+
+        public BlogInfo RetrieveBlog() => Client.GetBlogInfo(BlogName);
+
+        internal override void SetClient(Tumblr client)
+        {
+            base.SetClient(client);
+            if (Trail != null)
+            {
+                foreach (var trailItem in Trail)
+                {
+                    trailItem.SetClient(client);
+                }
+            }
+        }
     }
 }

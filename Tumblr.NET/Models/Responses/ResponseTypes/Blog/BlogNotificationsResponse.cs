@@ -9,5 +9,13 @@ namespace TumblrNET.Models.Responses.ResponseTypes.Blog
     {
         [JsonPropertyName("notifications")]
         public required Activity[] Notifications { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            foreach (var notification in Notifications)
+            {
+                notification.SetClient(client);
+            }
+        }
     }
 }

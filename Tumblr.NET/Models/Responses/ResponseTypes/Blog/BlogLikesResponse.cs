@@ -10,5 +10,13 @@ namespace TumblrNET.Models.Responses.ResponseTypes.Blog
         
         [JsonPropertyName("liked_count")]
         public required int LikedCount { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            foreach (var likedPost in LikedPosts)
+            {
+                likedPost.SetClient(client);
+            }
+        }
     }
 }

@@ -10,5 +10,13 @@ namespace TumblrNET.Models.Responses.ResponseTypes.Blog
         
         [JsonPropertyName("total_blogs")]
         public required int TotalBlogs { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            foreach (var shortBlog in Blogs)
+            {
+                shortBlog.SetClient(client);
+            }
+        }
     }
 }

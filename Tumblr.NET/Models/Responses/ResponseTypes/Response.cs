@@ -32,5 +32,9 @@ namespace TumblrNET.Models.Responses.ResponseTypes
         [JsonPropertyName("_links")]
         // TODO This should be a base Link but APPARENTLY Tumblr fucking lied about the type property
         public Dictionary<string, ActionLink>? Links { get; set; }
+
+        internal virtual void SetClient(Tumblr client)
+        {
+        }
     }
 }

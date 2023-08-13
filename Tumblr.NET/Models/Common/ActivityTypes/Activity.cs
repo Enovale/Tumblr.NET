@@ -20,7 +20,7 @@ namespace TumblrNET.Models.Common.ActivityTypes
     [JsonDerivedType(typeof(PostAppealRejectedActivity), ACTIVITY_TYPE_POST_APPEAL_REJECTED)]
     [JsonDerivedType(typeof(MissedPostActivity), ACTIVITY_TYPE_WHAT_YOU_MISSED)]
     [JsonDerivedType(typeof(ConversationalNoteActivity), ACTIVITY_TYPE_CONVERSATIONAL_NOTE)]
-    public class Activity
+    public class Activity : TumblrResource
     {
         internal const string ACTIVITY_TYPE_LIKE = "like";
         internal const string ACTIVITY_TYPE_REPLY = "reply";

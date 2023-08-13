@@ -10,5 +10,13 @@ namespace TumblrNET.Models.Responses.ResponseTypes.Post
         
         [JsonPropertyName("total_notes")]
         public int TotalNotes { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            foreach (var note in Notes)
+            {
+                note.SetClient(client);
+            }
+        }
     }
 }

@@ -1,10 +1,8 @@
-using TumblrNET.Models.Requests;
-
 namespace TumblrNET
 {
     public class TumblrConfiguration
     {
-        public string OAuthRoot { get; set; } = "https://tumblr.com";
+        public string OAuthRoot { get; set; } = "https://www.tumblr.com";
         
         public string ApiRoot { get; set; } = "https://api.tumblr.com";
 

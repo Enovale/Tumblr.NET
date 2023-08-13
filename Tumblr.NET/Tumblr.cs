@@ -7,16 +7,18 @@ using TumblrNET.Models.Common.Blog;
 using TumblrNET.Models.Common.Post;
 using TumblrNET.Models.Requests;
 using TumblrNET.Models.Requests.RequestTypes.Blog;
+using TumblrNET.Models.Requests.RequestTypes.User;
 using TumblrNET.Models.Responses;
 using TumblrNET.Models.Responses.ResponseTypes;
+using TumblrNET.Models.Responses.ResponseTypes.User;
 
 namespace TumblrNET
 {
     public class Tumblr
     {
         public AuthenticationRequirement MaximumAvailableAuthentication => _core.MaximumAvailableAuthentication;
-        
-        private TumblrConfiguration _tumblrConfiguration { get; set; }
+
+        private readonly TumblrConfiguration _tumblrConfiguration;
 
         private readonly TumblrCore _core;
 
@@ -37,14 +39,21 @@ namespace TumblrNET
             _core.ConsumerSecret = consumerSecret;
         }
 
-        public void SetOAuthToken(string accessToken, string refreshToken)
+        public void SetOAuthToken(string accessToken, string? refreshToken = null, DateTimeOffset? expireyDate = null)
         {
-            // TODO WIP OAuth Token
+            _core.OAuthState = new OAuth2State
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                ExpirationDate = expireyDate,
+                TokenType = "Bearer"
+            };
         }
 
-        public void RequestOAuthToken(string code, string? redirectUrl = null)
+        public async Task RequestAndSetOAuthTokenAsync(string code, string? redirectUrl = null)
         {
-            // TODO Request token (/oauth2/token) then SetOAuthToken();
+            var tokenState = await _core.RequestOAuthAccessCodeAsync(_tumblrConfiguration, code, redirectUrl);
+            SetOAuthToken(tokenState.AccessToken, tokenState.RefreshToken);
         }
 
         public Uri GetAuthorizationRequestUri(OAuthScope[] scopes, out string state, string? redirectUrl = null)
@@ -64,11 +73,21 @@ namespace TumblrNET
             return builder.Uri;
         }
 
+        public UserInfo GetUserInfo()
+        {
+            var request = new UserInfoRequest();
+            var result = _core.GetUserInfo(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.User;
+        }
+
         public async Task<BlogInfo> GetBlogInfoAsync(string blogIdentifier)
         {
             var request = new BlogInfoRequest(blogIdentifier);
             var result = await _core.GetBlogInfoAsync(_tumblrConfiguration, request);
             ThrowErrorsIfNeeded(result);
+            WrapResources(result);
             return result.Response.Blog;
         }
 
@@ -77,6 +96,7 @@ namespace TumblrNET
             var request = new BlogInfoRequest(blogIdentifier);
             var result = _core.GetBlogInfo(_tumblrConfiguration, request);
             ThrowErrorsIfNeeded(result);
+            WrapResources(result);
             return result.Response.Blog;
         }
 
@@ -139,6 +159,7 @@ namespace TumblrNET
             var request = new BlogPostsRequest(blogIdentifier, type, id, limit, offset, reblogInfo, notesInfo, format, before, tags);
             var result = await _core.GetBlogPostsAsync(_tumblrConfiguration, request);
             ThrowErrorsIfNeeded(result);
+            WrapResources(result);
             return (result.Response.Posts, result.Response.Blog);
         }
 
@@ -156,8 +177,14 @@ namespace TumblrNET
             var request = new BlogPostsRequest(blogIdentifier, type, id, limit, offset, reblogInfo, notesInfo, format, before, tags);
             var result = _core.GetBlogPosts(_tumblrConfiguration, request);
             ThrowErrorsIfNeeded(result);
+            WrapResources(result);
             blogInfo = result.Response.Blog;
             return result.Response.Posts;
+        }
+
+        private void WrapResources<TResponse>(ResponseWrapper<TResponse> response) where TResponse : Response
+        {
+            response.Response.SetClient(this);
         }
 
         private void ThrowErrorsIfNeeded<TResponse>(ResponseWrapper<TResponse> response) where TResponse : Response

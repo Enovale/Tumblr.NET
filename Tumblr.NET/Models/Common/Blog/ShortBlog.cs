@@ -7,7 +7,7 @@ namespace TumblrNET.Models.Common.Blog
     // TODO There are literally like 8 different definitions across the API
     // determining what a "short blog info" is. This will probably be handled
     // by just making everything nullable by I FUCKING HATE IT SO MUCH.
-    public class ShortBlog
+    public class ShortBlog : TumblrResource
     {
         [JsonPropertyName("name")]
         public required string Username { get; set; }
@@ -31,11 +31,13 @@ namespace TumblrNET.Models.Common.Blog
         [JsonConverter(typeof(JsonTimestampConverter))]
         public required DateTimeOffset Updated { get; set; }
         
+        // Undocumented. Is only null during UserInfo requests.
         [JsonPropertyName("tumblrmart_accessories")]
-        public required TumblrmartAccessories TumblrmartAccessories { get; set; }
+        public TumblrmartAccessories? TumblrmartAccessories { get; set; }
         
+        // Undocumented. Is only null during UserInfo requests.
         [JsonPropertyName("can_show_badges")]
-        public required bool CanShowBadges { get; set; }
+        public bool? CanShowBadges { get; set; }
         
         // Undocumented.
         [JsonPropertyName("active")]
@@ -44,5 +46,7 @@ namespace TumblrNET.Models.Common.Blog
         // Undocumented.
         [JsonPropertyName("show_follow_action")]
         public bool? ShowFollowAction { get; set; }
+
+        public BlogInfo RetrieveFullBlog() => Client.GetBlogInfo(Username);
     }
 }

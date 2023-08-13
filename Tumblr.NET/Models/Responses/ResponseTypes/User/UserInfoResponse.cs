@@ -6,5 +6,10 @@ namespace TumblrNET.Models.Responses.ResponseTypes.User
     {
         [JsonPropertyName("user")]
         public required UserInfo User { get; set; }
+
+        internal override void SetClient(Tumblr client)
+        {
+            User.SetClient(client);
+        }
     }
 }

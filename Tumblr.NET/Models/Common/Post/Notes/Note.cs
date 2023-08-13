@@ -7,7 +7,7 @@ namespace TumblrNET.Models.Common.Post.Notes
     [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
     [JsonDerivedType(typeof(LikeNote), "like")]
     [JsonDerivedType(typeof(ReblogNote), "reblog")]
-    public abstract class Note
+    public abstract class Note : TumblrResource
     {
         [JsonPropertyName("timestamp")]
         [JsonConverter(typeof(JsonTimestampConverter))]
@@ -28,5 +28,7 @@ namespace TumblrNET.Models.Common.Post.Notes
         [JsonPropertyName("avatar_shape")]
         [JsonConverter(typeof(JsonAttributeEnumConverter<AvatarShape>))]
         public required AvatarShape AvatarShape { get; set; }
+
+        public BlogInfo RetrieveBlog() => Client.GetBlogInfo(BlogName);
     }
 }

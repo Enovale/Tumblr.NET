@@ -5,8 +5,8 @@
 
 - [ ] Auth
   - [x] API Key
-  - [ ] OAuth
-    - [ ] OAuth login flow
+  - [x] OAuth
+    - [x] OAuth login flow
     - [ ] XAuth (/oauth/access_token)
 - [ ] Post Types
   - [x] NPF
@@ -17,13 +17,14 @@
     - [x] Generic Response Wrapper
   - [x] Json serializer
   - [x] Json de-serializer
-- [ ] User-facing API
-  - [ ] Raw API
-    - [ ] Request API
-    - [ ] Response API
-  - [ ] Abstracted API
-    - [ ] Request API
-    - [ ] Response API
+- [x] User-facing API (Not actually done but the structure is in place, it's simply a matter of boilerplating everything)
+  - [x] Raw API
+    - [x] Request API
+    - [x] Response API
+  - [x] Abstracted API
+    - [x] Request API
+    - [x] Response API
+  - [x] Object Oriented API (WIP)
 - [x] API Wrapper
   - [x] Common Models
     - [ ] Activity
