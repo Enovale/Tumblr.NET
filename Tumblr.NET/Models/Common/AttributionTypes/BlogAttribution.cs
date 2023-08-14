@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using TumblrNET.Models.Common.Blog;
+using TumblrNET.Models.Common.BlogTypes;
 
 namespace TumblrNET.Models.Common.AttributionTypes
 {

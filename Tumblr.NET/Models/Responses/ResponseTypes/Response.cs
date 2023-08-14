@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
 using TumblrNET.Models.Responses.Links;
-using TumblrNET.Models.Responses.ResponseTypes.Blog;
-using TumblrNET.Models.Responses.ResponseTypes.Post;
-using TumblrNET.Models.Responses.ResponseTypes.Tag;
-using TumblrNET.Models.Responses.ResponseTypes.User;
+using TumblrNET.Models.Responses.ResponseTypes.BlogResponses;
+using TumblrNET.Models.Responses.ResponseTypes.PostResponses;
+using TumblrNET.Models.Responses.ResponseTypes.TagResponses;
+using TumblrNET.Models.Responses.ResponseTypes.UserResponses;
 
 namespace TumblrNET.Models.Responses.ResponseTypes
 {

@@ -3,15 +3,15 @@ using System.Web;
 using TumblrNET.Converters.Uri;
 using TumblrNET.Extensions;
 using TumblrNET.Models.Authentication;
-using TumblrNET.Models.Common.Blog;
-using TumblrNET.Models.Common.Post;
+using TumblrNET.Models.Common.BlogTypes;
+using TumblrNET.Models.Common.PostTypes;
 using TumblrNET.Models.Requests;
 using TumblrNET.Models.Requests.RequestTypes.Blog;
 using TumblrNET.Models.Requests.RequestTypes.Tag;
 using TumblrNET.Models.Requests.RequestTypes.User;
 using TumblrNET.Models.Responses;
 using TumblrNET.Models.Responses.ResponseTypes;
-using TumblrNET.Models.Responses.ResponseTypes.User;
+using TumblrNET.Models.Responses.ResponseTypes.UserResponses;
 
 namespace TumblrNET
 {
@@ -73,6 +73,15 @@ namespace TumblrNET
             var builder = new UriBuilder(_tumblrConfiguration.OAuthRoot + "/oauth2/authorize" + "?" + query);
             return builder.Uri;
         }
+        
+        public async Task<UserInfo> GetUserInfoAsync()
+        {
+            var request = new UserInfoRequest();
+            var result = await _core.GetUserInfoAsync(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.User;
+        }
 
         public UserInfo GetUserInfo()
         {
@@ -82,8 +91,26 @@ namespace TumblrNET
             WrapResources(result);
             return result.Response.User;
         }
+        
+        public async Task<Post[]> GetUserDashboardAsync(int? limit = null, int? offset = null, PostType? postType = null, long? sincePostId = null, bool? reblogInfo = null, bool? notesInfo = null)
+        {
+            var request = new UserDashboardRequest(limit, offset, postType, sincePostId, reblogInfo, notesInfo);
+            var result = await _core.GetUserDashboardAsync(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.Posts;
+        }
 
-        public async Task<BlogInfo> GetBlogInfoAsync(string blogIdentifier)
+        public Post[] GetUserDashboard(int? limit = null, int? offset = null, PostType? postType = null, long? sincePostId = null, bool? reblogInfo = null, bool? notesInfo = null)
+        {
+            var request = new UserDashboardRequest(limit, offset, postType, sincePostId, reblogInfo, notesInfo);
+            var result = _core.GetUserDashboard(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.Posts;
+        }
+
+        public async Task<Blog> GetBlogAsync(string blogIdentifier)
         {
             var request = new BlogInfoRequest(blogIdentifier);
             var result = await _core.GetBlogInfoAsync(_tumblrConfiguration, request);
@@ -92,7 +119,7 @@ namespace TumblrNET
             return result.Response.Blog;
         }
 
-        public BlogInfo GetBlogInfo(string blogIdentifier)
+        public Blog GetBlog(string blogIdentifier)
         {
             var request = new BlogInfoRequest(blogIdentifier);
             var result = _core.GetBlogInfo(_tumblrConfiguration, request);
@@ -121,7 +148,7 @@ namespace TumblrNET
             return result.Response.AvatarUrl;
         }
 
-        public async Task<(PostInfo[] Posts, BlogInfo Blog)> GetBlogPostsAsync(string blogIdentifier,
+        public async Task<(Post[] Posts, Blog Blog)> GetBlogPostsAsync(string blogIdentifier,
             PostType? type = null,
             long? id = null,
             int? limit = null,
@@ -139,7 +166,7 @@ namespace TumblrNET
             return (result.Response.Posts, result.Response.Blog);
         }
 
-        public PostInfo[] GetBlogPosts(string blogIdentifier, out BlogInfo blogInfo,
+        public Post[] GetBlogPosts(string blogIdentifier, out Blog blog,
             PostType? type = null,
             long? id = null,
             int? limit = null,
@@ -154,11 +181,12 @@ namespace TumblrNET
             var result = _core.GetBlogPosts(_tumblrConfiguration, request);
             ThrowErrorsIfNeeded(result);
             WrapResources(result);
-            blogInfo = result.Response.Blog;
+            blog = result.Response.Blog;
             return result.Response.Posts;
         }
         
-        public async Task<List<PostInfo>> GetPostsWithTagAsync(string tag, DateTimeOffset? before = null, int? limit = null, PostFormat? format = null)
+        // TODO: Use array instead of a list
+        public async Task<List<Post>> GetPostsWithTagAsync(string tag, DateTimeOffset? before = null, int? limit = null, PostFormat? format = null)
         {
             var request = new TaggedPostsRequest(tag, before, limit, format);
             var result = await _core.GetPostsWithTagAsync(_tumblrConfiguration, request);
@@ -167,7 +195,7 @@ namespace TumblrNET
             return result.Response.ToList();
         }
 
-        public List<PostInfo> GetPostsWithTag(string tag, DateTimeOffset? before = null, int? limit = null, PostFormat? format = null)
+        public List<Post> GetPostsWithTag(string tag, DateTimeOffset? before = null, int? limit = null, PostFormat? format = null)
         {
             var request = new TaggedPostsRequest(tag, before, limit, format);
             var result = _core.GetPostsWithTag(_tumblrConfiguration, request);

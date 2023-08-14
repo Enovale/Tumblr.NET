@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace TumblrNET.Models.Common.Blog
+namespace TumblrNET.Models.Common.BlogTypes
 {
     public class BlogMention
     {

@@ -1,4 +1,4 @@
-namespace TumblrNET.Models.Common.Post.Notes
+namespace TumblrNET.Models.Common.PostTypes.Notes
 {
     public class LikeNote : Note
     {

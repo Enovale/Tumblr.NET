@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using TumblrNET.Models.Common.Post;
+using TumblrNET.Models.Common.PostTypes;
 
 namespace TumblrNET.Models.Common.Tag
 {
@@ -17,7 +17,7 @@ namespace TumblrNET.Models.Common.Tag
         [JsonPropertyName("featured")]
         public required bool Featured { get; set; }
 
-        public PostInfo[] GetPostsWithTag()
+        public Post[] GetPostsWithTag()
         {
             throw new NotImplementedException();
         }

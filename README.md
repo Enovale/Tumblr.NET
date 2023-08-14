@@ -7,6 +7,8 @@
   - [x] API Key
   - [x] OAuth
     - [x] OAuth login flow
+    - [ ] OAuth 1.0
+    - [x] OAuth 2.0
     - [ ] XAuth (/oauth/access_token)
 - [ ] Exception handling
   - [ ] Auth errors
@@ -14,9 +16,9 @@
   - [ ] Network errors
   - [ ] Test these things
 - [ ] NUnit Tests
-- [ ] Post Types
+- [x] Post Types
   - [x] NPF
-  - [ ] Legacy Posts
+  - [x] Legacy Posts
 - [x] Transport
   - [x] Models
     - [x] Generic Request Wrapper
@@ -31,6 +33,7 @@
     - [x] Request API
     - [x] Response API
   - [x] Object Oriented API (WIP)
+    - [ ] Async overload
 - [x] API Wrapper
   - [x] Common Models
     - [ ] Activity

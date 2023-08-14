@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using TumblrNET.Converters.Json;
 using TumblrNET.Models.Common.Blocks;
 
-namespace TumblrNET.Models.Common.Blog
+namespace TumblrNET.Models.Common.BlogTypes
 {
     public class BlogTheme
     {

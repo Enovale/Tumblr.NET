@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace TumblrNET.Models.Common.Media
 {
-    public class LegacyPhotos
+    public class LegacyPhoto
     {
         [JsonPropertyName("caption")]
         public required string Caption { get; set; }

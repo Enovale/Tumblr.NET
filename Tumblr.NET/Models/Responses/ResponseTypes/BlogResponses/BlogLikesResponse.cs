@@ -1,12 +1,12 @@
 using System.Text.Json.Serialization;
-using TumblrNET.Models.Common.Post;
+using TumblrNET.Models.Common.PostTypes;
 
-namespace TumblrNET.Models.Responses.ResponseTypes.Blog
+namespace TumblrNET.Models.Responses.ResponseTypes.BlogResponses
 {
     public class BlogLikesResponse : Response
     {
         [JsonPropertyName("liked_posts")]
-        public required PostInfo[] LikedPosts { get; set; }
+        public required Post[] LikedPosts { get; set; }
         
         [JsonPropertyName("liked_count")]
         public required int LikedCount { get; set; }

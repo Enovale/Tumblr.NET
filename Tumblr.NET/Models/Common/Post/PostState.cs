@@ -1,6 +1,6 @@
 using TumblrNET.Attributes;
 
-namespace TumblrNET.Models.Common.Post
+namespace TumblrNET.Models.Common.PostTypes
 {
     public enum PostState
     {

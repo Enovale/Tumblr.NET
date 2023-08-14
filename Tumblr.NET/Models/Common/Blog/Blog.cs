@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 using TumblrNET.Converters.Json;
 using TumblrNET.Models.Common.Media;
-using TumblrNET.Models.Common.Post;
+using TumblrNET.Models.Common.PostTypes;
 
-namespace TumblrNET.Models.Common.Blog
+namespace TumblrNET.Models.Common.BlogTypes
 {
-    public class BlogInfo : TumblrResource
+    public class Blog : TumblrResource
     {
         [JsonPropertyName("title")]
         public required string Title { get; set; }
@@ -62,7 +62,12 @@ namespace TumblrNET.Models.Common.Blog
         [JsonPropertyName("timezone_offset")]
         public string? TimezoneOffset { get; set; }
 
-        public PostInfo[] RetrievePosts(PostType? type = null,
+        public string RetrieveAvatarUrl()
+        {
+            return Client.GetBlogAvatarUrl(Username);
+        }
+
+        public Post[] RetrievePosts(PostType? type = null,
             long? id = null,
             int? limit = null,
             int? offset = null,

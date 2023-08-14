@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using TumblrNET.Models.Common.Blocks;
 using TumblrNET.Models.Common.Blocks.LayoutTypes;
 
-namespace TumblrNET.Models.Common.Post
+namespace TumblrNET.Models.Common.PostTypes
 {
     public class ContentContainer : TumblrResource
     {

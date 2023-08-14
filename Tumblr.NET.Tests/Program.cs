@@ -1,6 +1,6 @@
 ﻿using TumblrNET;
 using TumblrNET.Models.Authentication;
-using TumblrNET.Models.Responses.ResponseTypes.User;
+using TumblrNET.Models.Responses.ResponseTypes.UserResponses;
 using TumblrNET.Tests;
 
 internal class Program
@@ -25,7 +25,7 @@ internal class Program
         var uri = _client.GetAuthorizationRequestUri(new [] { OAuthScope.Basic }, out _state);
         Console.WriteLine(uri);
         var taggedPosts = await _client.GetPostsWithTagAsync("food");
-        var posts = _client.GetBlogPosts("enovale", out var blogInfo);
+        var posts = _client.GetBlogPosts("enovale", out var blogInfo, null, null, 50);
         var asyncPostsResponse = await _client.GetBlogPostsAsync("enovale");
 
         for (;;)
@@ -56,5 +56,6 @@ internal class Program
         await _client.RequestAndSetOAuthTokenAsync(code);
         _user = _client.GetUserInfo();
         var avatarUrl = await _client.GetBlogAvatarUrlAsync("enovale");
+        var dash = await _client.GetUserDashboardAsync(50);
     }
 }

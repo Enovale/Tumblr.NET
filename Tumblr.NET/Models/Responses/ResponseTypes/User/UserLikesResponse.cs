@@ -1,6 +1,6 @@
-using TumblrNET.Models.Responses.ResponseTypes.Blog;
+using TumblrNET.Models.Responses.ResponseTypes.BlogResponses;
 
-namespace TumblrNET.Models.Responses.ResponseTypes.User
+namespace TumblrNET.Models.Responses.ResponseTypes.UserResponses
 {
     public class UserLikesResponse : BlogLikesResponse
     {

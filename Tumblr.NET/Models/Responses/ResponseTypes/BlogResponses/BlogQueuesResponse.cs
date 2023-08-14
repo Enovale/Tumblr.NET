@@ -1,4 +1,4 @@
-namespace TumblrNET.Models.Responses.ResponseTypes.Blog
+namespace TumblrNET.Models.Responses.ResponseTypes.BlogResponses
 {
     // TODO Tumblr's API literally just doesn't document this.
     public class BlogQueuesResponse : Response

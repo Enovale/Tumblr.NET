@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using TumblrNET.Models.Common.Blog;
+using TumblrNET.Models.Common.BlogTypes;
 
-namespace TumblrNET.Models.Responses.ResponseTypes.Blog
+namespace TumblrNET.Models.Responses.ResponseTypes.BlogResponses
 {
     public class BlogFollowerResponse : Response
     {

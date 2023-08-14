@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 using TumblrNET.Converters.Json;
-using TumblrNET.Models.Common.Blog;
+using TumblrNET.Models.Common.BlogTypes;
 
-namespace TumblrNET.Models.Common.Post.Notes
+namespace TumblrNET.Models.Common.PostTypes.Notes
 {
     [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
     [JsonDerivedType(typeof(LikeNote), "like")]
@@ -29,6 +29,6 @@ namespace TumblrNET.Models.Common.Post.Notes
         [JsonConverter(typeof(JsonAttributeEnumConverter<AvatarShape>))]
         public required AvatarShape AvatarShape { get; set; }
 
-        public BlogInfo RetrieveBlog() => Client.GetBlogInfo(BlogName);
+        public Blog RetrieveBlog() => Client.GetBlog(BlogName);
     }
 }

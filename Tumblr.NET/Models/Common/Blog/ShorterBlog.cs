@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TumblrNET.Models.Common.Blog
+namespace TumblrNET.Models.Common.BlogTypes
 {
     public class ShorterBlog : TumblrResource
     {
@@ -13,6 +13,6 @@ namespace TumblrNET.Models.Common.Blog
         [JsonPropertyName("uuid")]
         public required string Uuid { get; set; }
 
-        public BlogInfo RetrieveFullBlog() => Client.GetBlogInfo(Username);
+        public Blog RetrieveFullBlog() => Client.GetBlog(Username);
     }
 }

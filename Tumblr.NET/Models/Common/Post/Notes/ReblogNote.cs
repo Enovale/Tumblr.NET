@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace TumblrNET.Models.Common.Post.Notes
+namespace TumblrNET.Models.Common.PostTypes.Notes
 {
     public class ReblogNote : Note
     {

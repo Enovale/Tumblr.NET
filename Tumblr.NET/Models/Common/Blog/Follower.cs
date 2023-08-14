@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using TumblrNET.Converters.Json;
 
-namespace TumblrNET.Models.Common.Blog
+namespace TumblrNET.Models.Common.BlogTypes
 {
     public class Follower : TumblrResource
     {
@@ -18,6 +18,6 @@ namespace TumblrNET.Models.Common.Blog
         [JsonConverter(typeof(JsonTimestampConverter))]
         public required DateTimeOffset Updated { get; set; }
 
-        public BlogInfo RetrieveBlog() => Client.GetBlogInfo(Username);
+        public Blog RetrieveBlog() => Client.GetBlog(Username);
     }
 }

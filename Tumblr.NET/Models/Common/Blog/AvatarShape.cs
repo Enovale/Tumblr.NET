@@ -1,6 +1,6 @@
 using TumblrNET.Attributes;
 
-namespace TumblrNET.Models.Common.Blog
+namespace TumblrNET.Models.Common.BlogTypes
 {
     public enum AvatarShape
     {

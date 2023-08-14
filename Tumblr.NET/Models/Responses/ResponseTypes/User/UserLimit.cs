@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using TumblrNET.Converters.Json;
 
-namespace TumblrNET.Models.Responses.ResponseTypes.User
+namespace TumblrNET.Models.Responses.ResponseTypes.UserResponses
 {
     public class UserLimit
     {

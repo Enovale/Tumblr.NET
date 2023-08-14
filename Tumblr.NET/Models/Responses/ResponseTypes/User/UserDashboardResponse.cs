@@ -1,12 +1,12 @@
 using System.Text.Json.Serialization;
-using TumblrNET.Models.Common.Post;
+using TumblrNET.Models.Common.PostTypes;
 
-namespace TumblrNET.Models.Responses.ResponseTypes.User
+namespace TumblrNET.Models.Responses.ResponseTypes.UserResponses
 {
     public class UserDashboardResponse : Response
     {
         [JsonPropertyName("posts")]
-        public required PostInfo[] Posts { get; set; }
+        public required Post[] Posts { get; set; }
 
         internal override void SetClient(Tumblr client)
         {

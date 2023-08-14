@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 using TumblrNET.Converters.Json;
 using TumblrNET.Models.Common;
-using TumblrNET.Models.Common.Blog;
-using TumblrNET.Models.Common.Post;
+using TumblrNET.Models.Common.BlogTypes;
+using TumblrNET.Models.Common.PostTypes;
 
-namespace TumblrNET.Models.Responses.ResponseTypes.User
+namespace TumblrNET.Models.Responses.ResponseTypes.UserResponses
 {
     public class UserInfo : TumblrResource
     {

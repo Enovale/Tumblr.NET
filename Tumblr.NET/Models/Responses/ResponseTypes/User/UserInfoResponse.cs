@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace TumblrNET.Models.Responses.ResponseTypes.User
+namespace TumblrNET.Models.Responses.ResponseTypes.UserResponses
 {
     public class UserInfoResponse : Response
     {

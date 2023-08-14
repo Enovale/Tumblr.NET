@@ -1,12 +1,12 @@
 using System.Text.Json.Serialization;
-using TumblrNET.Models.Common.Blog;
+using TumblrNET.Models.Common.BlogTypes;
 
-namespace TumblrNET.Models.Responses.ResponseTypes.Blog
+namespace TumblrNET.Models.Responses.ResponseTypes.BlogResponses
 {
     public class BlogInfoResponse : Response
     {
         [JsonPropertyName("blog")]
-        public required BlogInfo Blog { get; set; }
+        public required Blog Blog { get; set; }
 
         internal override void SetClient(Tumblr client)
         {

@@ -1,5 +1,5 @@
 using TumblrNET.Attributes;
-using TumblrNET.Models.Common.Post;
+using TumblrNET.Models.Common.PostTypes;
 
 namespace TumblrNET.Models.Requests.RequestTypes.User
 {

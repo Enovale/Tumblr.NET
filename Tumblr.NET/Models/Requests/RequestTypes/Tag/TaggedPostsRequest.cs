@@ -1,6 +1,6 @@
 using TumblrNET.Attributes;
 using TumblrNET.Converters.Uri;
-using TumblrNET.Models.Common.Post;
+using TumblrNET.Models.Common.PostTypes;
 
 namespace TumblrNET.Models.Requests.RequestTypes.Tag
 {

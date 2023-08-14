@@ -12,16 +12,14 @@ using TumblrNET.Models.Requests.RequestTypes.Tag;
 using TumblrNET.Models.Requests.RequestTypes.User;
 using TumblrNET.Models.Responses;
 using TumblrNET.Models.Responses.ResponseTypes;
-using TumblrNET.Models.Responses.ResponseTypes.Blog;
-using TumblrNET.Models.Responses.ResponseTypes.Tag;
-using TumblrNET.Models.Responses.ResponseTypes.User;
+using TumblrNET.Models.Responses.ResponseTypes.BlogResponses;
+using TumblrNET.Models.Responses.ResponseTypes.TagResponses;
+using TumblrNET.Models.Responses.ResponseTypes.UserResponses;
 
 namespace TumblrNET
 {
     internal class TumblrCore
     {
-        private const string USER_AGENT = "Tumblr.NET";
-
         private readonly HttpClient _httpClient;
 
         public string? ConsumerKey { get; set; }

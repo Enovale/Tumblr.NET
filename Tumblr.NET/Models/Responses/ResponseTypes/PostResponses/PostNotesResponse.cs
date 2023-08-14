@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using TumblrNET.Models.Common.Post.Notes;
+using TumblrNET.Models.Common.PostTypes.Notes;
 
-namespace TumblrNET.Models.Responses.ResponseTypes.Post
+namespace TumblrNET.Models.Responses.ResponseTypes.PostResponses
 {
     public class PostNotesResponse : Response
     {

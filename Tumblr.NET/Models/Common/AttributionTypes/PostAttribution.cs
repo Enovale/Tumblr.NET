@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using TumblrNET.Models.Common.Post;
+using TumblrNET.Models.Common.PostTypes;
 
 namespace TumblrNET.Models.Common.AttributionTypes
 {

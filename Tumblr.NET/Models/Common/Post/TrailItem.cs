@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using TumblrNET.Models.Common.Blog;
+using TumblrNET.Models.Common.BlogTypes;
 
-namespace TumblrNET.Models.Common.Post
+namespace TumblrNET.Models.Common.PostTypes
 {
     /*
      * TODO This API is fucking garbage and during Trails it's basically completely

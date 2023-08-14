@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using TumblrNET.Converters.Json;
 using TumblrNET.Models.Common.Media;
 
-namespace TumblrNET.Models.Common.Blog
+namespace TumblrNET.Models.Common.BlogTypes
 {
     // TODO There are literally like 8 different definitions across the API
     // determining what a "short blog info" is. This will probably be handled
@@ -47,6 +47,6 @@ namespace TumblrNET.Models.Common.Blog
         [JsonPropertyName("show_follow_action")]
         public bool? ShowFollowAction { get; set; }
 
-        public BlogInfo RetrieveFullBlog() => Client.GetBlogInfo(Username);
+        public Blog RetrieveFullBlog() => Client.GetBlog(Username);
     }
 }

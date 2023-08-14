@@ -1,12 +1,12 @@
 using System.Text.Json.Serialization;
-using TumblrNET.Models.Common.Post;
+using TumblrNET.Models.Common.PostTypes;
 
-namespace TumblrNET.Models.Responses.ResponseTypes.Blog
+namespace TumblrNET.Models.Responses.ResponseTypes.BlogResponses
 {
     public class BlogPostsResponse : BlogInfoResponse
     {
         [JsonPropertyName("posts")]
-        public required PostInfo[] Posts { get; set; }
+        public required Post[] Posts { get; set; }
         
         [JsonPropertyName("total_posts")]
         public int TotalPosts { get; set; }
