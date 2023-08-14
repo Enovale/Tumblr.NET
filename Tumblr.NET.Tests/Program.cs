@@ -24,11 +24,9 @@ internal class Program
         _client = new Tumblr(await File.ReadAllTextAsync("apikey"), await File.ReadAllTextAsync("secret"));
         var uri = _client.GetAuthorizationRequestUri(new [] { OAuthScope.Basic }, out _state);
         Console.WriteLine(uri);
+        var taggedPosts = await _client.GetPostsWithTagAsync("food");
         var posts = _client.GetBlogPosts("enovale", out var blogInfo);
         var asyncPostsResponse = await _client.GetBlogPostsAsync("enovale");
-        await using var fileStream = File.OpenWrite("test.png");
-        var avatarStream = await _client.GetBlogAvatarStreamAsync("enovale");
-        await avatarStream.CopyToAsync(fileStream);
 
         for (;;)
         {
@@ -57,5 +55,6 @@ internal class Program
 
         await _client.RequestAndSetOAuthTokenAsync(code);
         _user = _client.GetUserInfo();
+        var avatarUrl = await _client.GetBlogAvatarUrlAsync("enovale");
     }
 }

@@ -7,6 +7,7 @@ using TumblrNET.Models.Common.Blog;
 using TumblrNET.Models.Common.Post;
 using TumblrNET.Models.Requests;
 using TumblrNET.Models.Requests.RequestTypes.Blog;
+using TumblrNET.Models.Requests.RequestTypes.Tag;
 using TumblrNET.Models.Requests.RequestTypes.User;
 using TumblrNET.Models.Responses;
 using TumblrNET.Models.Responses.ResponseTypes;
@@ -100,49 +101,24 @@ namespace TumblrNET
             return result.Response.Blog;
         }
 
-        // TODO So the documentation says that if you are OAuthed this will provide a url
-        // but if you are not it will give you the image directly.
-        // This is literally just fake and it seems it gives you the url regardless.
-        // Need to test this tho with OAuth setup but it isn't currently set up so for now we die.
-        public async Task<Uri> GetBlogAvatarUrlAsync(string blogIdentifier)
+        // This works exactly the same as every other request despite what the documentation says.
+        // The behavior does not change regardless of authentication, it's always a standard response.
+        public async Task<string> GetBlogAvatarUrlAsync(string blogIdentifier)
         {
             var request = new BlogAvatarRequest(blogIdentifier);
             var result = await _core.GetBlogAvatarAsync(_tumblrConfiguration, request);
-            // TODO Can I actually force this?
-            return result.Headers.Location!;
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.AvatarUrl;
         }
 
-        public Uri GetBlogAvatarUrl(string blogIdentifier)
+        public string GetBlogAvatarUrl(string blogIdentifier)
         {
             var request = new BlogAvatarRequest(blogIdentifier);
             var result = _core.GetBlogAvatar(_tumblrConfiguration, request);
-            // TODO Can I actually force this?
-            return result.Headers.Location!;
-        }
-
-        /// <summary>
-        /// Gets the image data of a blog's avatar as a stream.
-        /// </summary>
-        /// <param name="blogIdentifier">The blog's blog identifier.</param>
-        /// <returns>The image data of the avatar in PNG format.</returns>
-        public async Task<Stream> GetBlogAvatarStreamAsync(string blogIdentifier)
-        {
-            var request = new BlogAvatarRequest(blogIdentifier);
-            var result = await _core.GetBlogAvatarAsync(_tumblrConfiguration, request);
-            var resultStr = result.Content.ReadAsStringAsync();
-            return await result.Content.ReadAsStreamAsync();
-        }
-
-        /// <summary>
-        /// Gets the image data of a blog's avatar as a stream.
-        /// </summary>
-        /// <param name="blogIdentifier">The blog's blog identifier.</param>
-        /// <returns>The image data of the avatar in PNG format.</returns>
-        public Stream GetBlogAvatarStream(string blogIdentifier)
-        {
-            var request = new BlogAvatarRequest(blogIdentifier);
-            var result = _core.GetBlogAvatar(_tumblrConfiguration, request);
-            return result.Content.ReadAsStream();
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.AvatarUrl;
         }
 
         public async Task<(PostInfo[] Posts, BlogInfo Blog)> GetBlogPostsAsync(string blogIdentifier,
@@ -180,6 +156,24 @@ namespace TumblrNET
             WrapResources(result);
             blogInfo = result.Response.Blog;
             return result.Response.Posts;
+        }
+        
+        public async Task<List<PostInfo>> GetPostsWithTagAsync(string tag, DateTimeOffset? before = null, int? limit = null, PostFormat? format = null)
+        {
+            var request = new TaggedPostsRequest(tag, before, limit, format);
+            var result = await _core.GetPostsWithTagAsync(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.ToList();
+        }
+
+        public List<PostInfo> GetPostsWithTag(string tag, DateTimeOffset? before = null, int? limit = null, PostFormat? format = null)
+        {
+            var request = new TaggedPostsRequest(tag, before, limit, format);
+            var result = _core.GetPostsWithTag(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.ToList();
         }
 
         private void WrapResources<TResponse>(ResponseWrapper<TResponse> response) where TResponse : Response

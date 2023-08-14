@@ -1,18 +1,17 @@
-using System.Text.Json.Serialization;
 using TumblrNET.Attributes;
-using TumblrNET.Converters.Json;
+using TumblrNET.Converters.Uri;
 using TumblrNET.Models.Common.Post;
 
 namespace TumblrNET.Models.Requests.RequestTypes.Tag
 {
-    public abstract class TaggedRequest : Request
+    public class TaggedPostsRequest : Request
     {
         public override AuthenticationRequirement Auth => AuthenticationRequirement.ApiKey;
 
         public override string ApiPath => "/v2/tagged";
 
         [UriParamName("tag")]
-        public required string Tag { get; set; }
+        public string Tag { get; set; }
         
         [UriParamName("before")]
         public DateTimeOffset? Before { get; set; }
@@ -21,10 +20,10 @@ namespace TumblrNET.Models.Requests.RequestTypes.Tag
         public int? Limit { get; set; }
         
         [UriParamName("filter")]
-        [JsonConverter(typeof(JsonAttributeEnumConverter<PostFormat>))]
+        [UriParamConverter(typeof(UriAttributeEnumConverter<PostFormat>))]
         public PostFormat? Format { get; set; }
 
-        public TaggedRequest(string tag, DateTimeOffset? before = null, int? limit = null, PostFormat? format = null)
+        public TaggedPostsRequest(string tag, DateTimeOffset? before = null, int? limit = null, PostFormat? format = null)
         {
             Tag = tag;
             Before = before;

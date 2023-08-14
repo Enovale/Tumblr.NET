@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <PackageReference Include="NetCoreServer" Version="7.0.0" />
+      <PackageReference Include="NUnit" Version="3.13.3" />
     </ItemGroup>
 
 </Project>

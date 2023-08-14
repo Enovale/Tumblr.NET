@@ -8,10 +8,12 @@ using TumblrNET.Models.Authentication;
 using TumblrNET.Models.Requests;
 using TumblrNET.Models.Requests.RequestTypes;
 using TumblrNET.Models.Requests.RequestTypes.Blog;
+using TumblrNET.Models.Requests.RequestTypes.Tag;
 using TumblrNET.Models.Requests.RequestTypes.User;
 using TumblrNET.Models.Responses;
 using TumblrNET.Models.Responses.ResponseTypes;
 using TumblrNET.Models.Responses.ResponseTypes.Blog;
+using TumblrNET.Models.Responses.ResponseTypes.Tag;
 using TumblrNET.Models.Responses.ResponseTypes.User;
 
 namespace TumblrNET
@@ -21,20 +23,20 @@ namespace TumblrNET
         private const string USER_AGENT = "Tumblr.NET";
 
         private readonly HttpClient _httpClient;
-        
+
         public string? ConsumerKey { get; set; }
-        
+
         public string? ConsumerSecret { get; set; }
 
         public OAuth2State? OAuthState { get; set; }
-        
+
         public AuthenticationRequirement MaximumAvailableAuthentication
         {
             get
             {
                 if (ConsumerKey != null && ConsumerSecret != null && OAuthState != null)
                     return AuthenticationRequirement.OAuth;
-                
+
                 if (ConsumerKey != null)
                     return AuthenticationRequirement.ApiKey;
 
@@ -54,10 +56,51 @@ namespace TumblrNET
             _httpClient.DefaultRequestHeaders.Add("User-Agent", config.UserAgent);
         }
 
+        public async Task<ResponseWrapper<UserInfoResponse>> GetUserInfoAsync(TumblrConfiguration config,
+            UserInfoRequest request, UriParamSerializationOptions? options = null)
+        {
+            return await SendAndDeserializeRequestAsync<UserInfoRequest, UserInfoResponse>(config, HttpMethod.Get,
+                request, options);
+        }
+
         public ResponseWrapper<UserInfoResponse> GetUserInfo(TumblrConfiguration config, UserInfoRequest request,
             UriParamSerializationOptions? options = null)
         {
             return SendAndDeserializeRequest<UserInfoRequest, UserInfoResponse>(config, HttpMethod.Get, request,
+                options);
+        }
+
+        public async Task<ResponseWrapper<UserDashboardResponse>> GetUserDashboardAsync(TumblrConfiguration config,
+            UserDashboardRequest request, UriParamSerializationOptions? options = null)
+        {
+            return await SendAndDeserializeRequestAsync<UserDashboardRequest, UserDashboardResponse>(config,
+                HttpMethod.Get,
+                request, options);
+        }
+
+        public ResponseWrapper<UserDashboardResponse> GetUserDashboard(TumblrConfiguration config,
+            UserDashboardRequest request,
+            UriParamSerializationOptions? options = null)
+        {
+            return SendAndDeserializeRequest<UserDashboardRequest, UserDashboardResponse>(config, HttpMethod.Get,
+                request,
+                options);
+        }
+
+        public async Task<ResponseWrapper<UserFollowingResponse>> GetUserFollowingAsync(TumblrConfiguration config,
+            UserFollowingRequest request, UriParamSerializationOptions? options = null)
+        {
+            return await SendAndDeserializeRequestAsync<UserFollowingRequest, UserFollowingResponse>(config,
+                HttpMethod.Get,
+                request, options);
+        }
+
+        public ResponseWrapper<UserFollowingResponse> GetUserFollowing(TumblrConfiguration config,
+            UserFollowingRequest request,
+            UriParamSerializationOptions? options = null)
+        {
+            return SendAndDeserializeRequest<UserFollowingRequest, UserFollowingResponse>(config, HttpMethod.Get,
+                request,
                 options);
         }
 
@@ -68,13 +111,6 @@ namespace TumblrNET
                 request, options);
         }
 
-        public async Task<ResponseWrapper<BlogPostsResponse>> GetBlogPostsAsync(TumblrConfiguration config,
-            BlogPostsRequest request, UriParamSerializationOptions? options = null)
-        {
-            return await SendAndDeserializeRequestAsync<BlogPostsRequest, BlogPostsResponse>(config, HttpMethod.Get,
-                request, options);
-        }
-
         public ResponseWrapper<BlogInfoResponse> GetBlogInfo(TumblrConfiguration config, BlogInfoRequest request,
             UriParamSerializationOptions? options = null)
         {
@@ -82,19 +118,11 @@ namespace TumblrNET
                 options);
         }
 
-        // This will return the URL in json form when OAuthed but we can get it regardless by checking the Location header.
-        public async Task<HttpResponseMessage> GetBlogAvatarAsync(TumblrConfiguration config,
-            BlogAvatarRequest request, UriParamSerializationOptions? options = null)
+        public async Task<ResponseWrapper<BlogPostsResponse>> GetBlogPostsAsync(TumblrConfiguration config,
+            BlogPostsRequest request, UriParamSerializationOptions? options = null)
         {
-            var response = await SendRequestAsync(config, HttpMethod.Get, request, options);
-            return response;
-        }
-
-        public HttpResponseMessage GetBlogAvatar(TumblrConfiguration config, BlogAvatarRequest request,
-            UriParamSerializationOptions? options = null)
-        {
-            var response = SendRequest(config, HttpMethod.Get, request, options);
-            return response;
+            return await SendAndDeserializeRequestAsync<BlogPostsRequest, BlogPostsResponse>(config, HttpMethod.Get,
+                request, options);
         }
 
         public ResponseWrapper<BlogPostsResponse> GetBlogPosts(TumblrConfiguration config,
@@ -104,14 +132,49 @@ namespace TumblrNET
                 options);
         }
 
+        // See comment in Tumblr.GetBlogAvatarUrl
+        public async Task<ResponseWrapper<BlogAvatarResponse>> GetBlogAvatarAsync(TumblrConfiguration config,
+            BlogAvatarRequest request, UriParamSerializationOptions? options = null)
+        {
+            var response = await SendAndDeserializeRequestAsync<BlogAvatarRequest, BlogAvatarResponse>(config,
+                HttpMethod.Get,
+                request, options);
+            return response;
+        }
+
+        public ResponseWrapper<BlogAvatarResponse> GetBlogAvatar(TumblrConfiguration config, BlogAvatarRequest request,
+            UriParamSerializationOptions? options = null)
+        {
+            return SendAndDeserializeRequest<BlogAvatarRequest, BlogAvatarResponse>(config, HttpMethod.Get, request,
+                options);
+        }
+        
+        public async Task<ResponseWrapper<TaggedPostsResponse>> GetPostsWithTagAsync(TumblrConfiguration config,
+            TaggedPostsRequest request, UriParamSerializationOptions? options = null)
+        {
+            var response = await SendAndDeserializeRequestAsync<TaggedPostsRequest, TaggedPostsResponse>(config,
+                HttpMethod.Get,
+                request, options);
+            return response;
+        }
+
+        public ResponseWrapper<TaggedPostsResponse> GetPostsWithTag(TumblrConfiguration config, TaggedPostsRequest request,
+            UriParamSerializationOptions? options = null)
+        {
+            return SendAndDeserializeRequest<TaggedPostsRequest, TaggedPostsResponse>(config, HttpMethod.Get, request,
+                options);
+        }
+
         public OAuth2State RequestOAuthAccessCode(TumblrConfiguration config, string code, string? redirectUri = null)
             => RequestOAuthAccessCodeAsync(config, code, redirectUri).Result;
 
-        public async Task<OAuth2State> RequestOAuthAccessCodeAsync(TumblrConfiguration config, string code, string? redirectUri = null)
+        public async Task<OAuth2State> RequestOAuthAccessCodeAsync(TumblrConfiguration config, string code,
+            string? redirectUri = null)
         {
             if (ConsumerKey == null || ConsumerSecret == null)
-                throw new InvalidOperationException($"This client instance is missing a consumer secret. Please construct the {nameof(Tumblr)} client with a key and a secret.");
-            
+                throw new InvalidOperationException(
+                    $"This client instance is missing a consumer secret. Please construct the {nameof(Tumblr)} client with a key and a secret.");
+
             var query = new List<KeyValuePair<string, string>>
             {
                 new("grant_type", "authorization_code"),
@@ -119,10 +182,10 @@ namespace TumblrNET
                 new("client_id", ConsumerKey),
                 new("client_secret", ConsumerSecret)
             };
-            
+
             if (redirectUri != null)
                 query.Add(new("redirect_uri", redirectUri));
-            
+
             var uri = new UriBuilder(config.ApiRoot + "/v2/oauth2/token" + "?" + query).ToString();
             var content = new FormUrlEncodedContent(query);
             var response = await _httpClient.PostAsync(uri, content);
@@ -132,10 +195,11 @@ namespace TumblrNET
                 throw new HttpRequestException("Unauthorized request.");
             }
 
-            var responseStr = await response.Content.ReadAsStringAsync();
-            var responseObj = JsonSerializer.Deserialize<OAuth2State>(responseStr);
+            var responseStream = await response.Content.ReadAsStreamAsync();
+            var responseObj = await JsonSerializer.DeserializeAsync<OAuth2State>(responseStream);
 
-            return responseObj ?? throw new SerializationException("Could not properly deserialize the authorization response.");
+            return responseObj ??
+                   throw new SerializationException("Could not properly deserialize the authorization response.");
         }
 
         private async Task<ResponseWrapper<TResult>> SendAndDeserializeRequestAsync<TRequest, TResult>(
@@ -143,7 +207,7 @@ namespace TumblrNET
             UriParamSerializationOptions? options = null) where TRequest : Request where TResult : Response
         {
             var result = await SendRequestAsync(config, message, request, options);
-            return DeserializeResponse<TResult>(await result.Content.ReadAsStringAsync());
+            return await DeserializeResponseAsync<TResult>(await result.Content.ReadAsStreamAsync());
         }
 
         private ResponseWrapper<TResult> SendAndDeserializeRequest<TRequest, TResult>(TumblrConfiguration config,
@@ -157,13 +221,20 @@ namespace TumblrNET
         private async Task<HttpResponseMessage> SendRequestAsync<TRequest>(TumblrConfiguration config,
             HttpMethod message, TRequest request, UriParamSerializationOptions? options = null) where TRequest : Request
         {
-            var uri = GetRequestUri(config, request, options);
-            var requestMsg = new HttpRequestMessage(message, uri);
+            var requestMsg = GetAuthorizedRequest(config, message, request, options);
             return await _httpClient.SendAsync(requestMsg);
         }
 
         private HttpResponseMessage SendRequest<TRequest>(TumblrConfiguration config, HttpMethod message,
             TRequest request, UriParamSerializationOptions? options = null) where TRequest : Request
+        {
+            var requestMsg = GetAuthorizedRequest(config, message, request, options);
+            return _httpClient.Send(requestMsg);
+        }
+
+        private HttpRequestMessage GetAuthorizedRequest<TRequest>(TumblrConfiguration config, HttpMethod message,
+            TRequest request,
+            UriParamSerializationOptions? options = null) where TRequest : Request
         {
             var uri = GetRequestUri(config, request, options);
             var requestMsg = new HttpRequestMessage(message, uri);
@@ -178,7 +249,17 @@ namespace TumblrNET
                         "This request requires OAuth authentication but the configuration is missing proper OAuth login details.");
             }
 
-            return _httpClient.Send(requestMsg);
+            return requestMsg;
+        }
+        
+        private async Task<ResponseWrapper<TResult>> DeserializeResponseAsync<TResult>(Stream utf8Json) where TResult : Response
+        {
+            var response = await JsonSerializer.DeserializeAsync<ResponseWrapper<TResult>>(utf8Json);
+
+            if (response == null)
+                throw new SerializationException($"Failed to deserialize {typeof(TResult).Name}.");
+
+            return response;
         }
 
         private ResponseWrapper<TResult> DeserializeResponse<TResult>(string json) where TResult : Response
