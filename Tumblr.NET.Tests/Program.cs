@@ -56,6 +56,8 @@ internal class Program
         await _client.RequestAndSetOAuthTokenAsync(code);
         _user = _client.GetUserInfo();
         var avatarUrl = await _client.GetBlogAvatarUrlAsync("enovale");
-        var dash = await _client.GetUserDashboardAsync(50);
+        var dash = _client.GetUserDashboard(50);
+        var following = await _client.GetUserFollowingAsync();
+        var likes = await _client.GetUserLikesAsync();
     }
 }

@@ -61,19 +61,22 @@ namespace TumblrNET
         {
             if (scopes.Length <= 0)
                 throw new ArgumentOutOfRangeException(nameof(scopes), "At least one scope must be provided.");
-            
+
             var query = HttpUtility.ParseQueryString(string.Empty);
             query.Add("client_id", _core.ConsumerKey);
             query.Add("response_type", "code");
-            query.Add("scope", string.Join(' ', scopes.Select(s => UriParamSerializer.GetConvertedValue(s, new UriAttributeEnumConverter<OAuthScope>()))));
+            query.Add("scope",
+                string.Join(' ',
+                    scopes.Select(s =>
+                        UriParamSerializer.GetConvertedValue(s, new UriAttributeEnumConverter<OAuthScope>()))));
             state = Guid.NewGuid().ToString();
             query.Add("state", state);
             query.Add("redirect_url", redirectUrl);
-            
+
             var builder = new UriBuilder(_tumblrConfiguration.OAuthRoot + "/oauth2/authorize" + "?" + query);
             return builder.Uri;
         }
-        
+
         public async Task<UserInfo> GetUserInfoAsync()
         {
             var request = new UserInfoRequest();
@@ -91,8 +94,9 @@ namespace TumblrNET
             WrapResources(result);
             return result.Response.User;
         }
-        
-        public async Task<Post[]> GetUserDashboardAsync(int? limit = null, int? offset = null, PostType? postType = null, long? sincePostId = null, bool? reblogInfo = null, bool? notesInfo = null)
+
+        public async Task<Post[]> GetUserDashboardAsync(int? limit = null, int? offset = null,
+            PostType? postType = null, long? sincePostId = null, bool? reblogInfo = null, bool? notesInfo = null)
         {
             var request = new UserDashboardRequest(limit, offset, postType, sincePostId, reblogInfo, notesInfo);
             var result = await _core.GetUserDashboardAsync(_tumblrConfiguration, request);
@@ -101,13 +105,68 @@ namespace TumblrNET
             return result.Response.Posts;
         }
 
-        public Post[] GetUserDashboard(int? limit = null, int? offset = null, PostType? postType = null, long? sincePostId = null, bool? reblogInfo = null, bool? notesInfo = null)
+        public Post[] GetUserDashboard(int? limit = null, int? offset = null, PostType? postType = null,
+            long? sincePostId = null, bool? reblogInfo = null, bool? notesInfo = null)
         {
             var request = new UserDashboardRequest(limit, offset, postType, sincePostId, reblogInfo, notesInfo);
             var result = _core.GetUserDashboard(_tumblrConfiguration, request);
             ThrowErrorsIfNeeded(result);
             WrapResources(result);
             return result.Response.Posts;
+        }
+
+        public async Task<ShortBlog[]> GetUserFollowingAsync(int? limit = null, int? offset = null)
+        {
+            var request = new UserFollowingRequest(limit, offset);
+            var result = await _core.GetUserFollowingAsync(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.Blogs;
+        }
+
+        public ShortBlog[] GetUserFollowing(int? limit = null, int? offset = null)
+        {
+            var request = new UserFollowingRequest(limit, offset);
+            var result = _core.GetUserFollowing(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.Blogs;
+        }
+
+        public async Task<Post[]> GetUserLikesAsync(int? limit = null, int? offset = null, DateTimeOffset? before = null, DateTimeOffset? after = null)
+        {
+            var request = new UserLikesRequest(limit, offset, before, after);
+            var result = await _core.GetUserLikesAsync(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.LikedPosts;
+        }
+
+        public Post[] GetUserLikes(int? limit = null, int? offset = null, DateTimeOffset? before = null, DateTimeOffset? after = null)
+        {
+            var request = new UserLikesRequest(limit, offset, before, after);
+            var result = _core.GetUserLikes(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.LikedPosts;
+        }
+
+        public async Task<Dictionary<string, UserLimit>> GetUserLimitAsync()
+        {
+            var request = new UserLimitsRequest();
+            var result = await _core.GetUserLimitAsync(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.Limits;
+        }
+
+        public Dictionary<string, UserLimit> GetUserLimit()
+        {
+            var request = new UserLimitsRequest();
+            var result = _core.GetUserLimit(_tumblrConfiguration, request);
+            ThrowErrorsIfNeeded(result);
+            WrapResources(result);
+            return result.Response.Limits;
         }
 
         public async Task<Blog> GetBlogAsync(string blogIdentifier)
@@ -159,7 +218,8 @@ namespace TumblrNET
             DateTimeOffset? before = null,
             params string[] tags)
         {
-            var request = new BlogPostsRequest(blogIdentifier, type, id, limit, offset, reblogInfo, notesInfo, format, before, tags);
+            var request = new BlogPostsRequest(blogIdentifier, type, id, limit, offset, reblogInfo, notesInfo, format,
+                before, tags);
             var result = await _core.GetBlogPostsAsync(_tumblrConfiguration, request);
             ThrowErrorsIfNeeded(result);
             WrapResources(result);
@@ -177,16 +237,18 @@ namespace TumblrNET
             DateTimeOffset? before = null,
             params string[] tags)
         {
-            var request = new BlogPostsRequest(blogIdentifier, type, id, limit, offset, reblogInfo, notesInfo, format, before, tags);
+            var request = new BlogPostsRequest(blogIdentifier, type, id, limit, offset, reblogInfo, notesInfo, format,
+                before, tags);
             var result = _core.GetBlogPosts(_tumblrConfiguration, request);
             ThrowErrorsIfNeeded(result);
             WrapResources(result);
             blog = result.Response.Blog;
             return result.Response.Posts;
         }
-        
+
         // TODO: Use array instead of a list
-        public async Task<List<Post>> GetPostsWithTagAsync(string tag, DateTimeOffset? before = null, int? limit = null, PostFormat? format = null)
+        public async Task<List<Post>> GetPostsWithTagAsync(string tag, DateTimeOffset? before = null, int? limit = null,
+            PostFormat? format = null)
         {
             var request = new TaggedPostsRequest(tag, before, limit, format);
             var result = await _core.GetPostsWithTagAsync(_tumblrConfiguration, request);
@@ -195,7 +257,8 @@ namespace TumblrNET
             return result.Response.ToList();
         }
 
-        public List<Post> GetPostsWithTag(string tag, DateTimeOffset? before = null, int? limit = null, PostFormat? format = null)
+        public List<Post> GetPostsWithTag(string tag, DateTimeOffset? before = null, int? limit = null,
+            PostFormat? format = null)
         {
             var request = new TaggedPostsRequest(tag, before, limit, format);
             var result = _core.GetPostsWithTag(_tumblrConfiguration, request);
@@ -217,7 +280,12 @@ namespace TumblrNET
                 case HttpStatusCode.Found:
                     return;
                 default:
-                    throw new HttpRequestException($"Tumblr responded with {response.Meta.Status}: {response.Meta.Message}.");
+                    throw new HttpRequestException(
+                        $"Tumblr responded with {response.Meta.Status}: {response.Meta.Message}. " +
+                        $"Error details: " +
+                        $"{string.Join(", ", response.Errors!.Select(
+                            e => $"{e.ErrorCode} {e.Title}: {e.Detail}"
+                        ))}");
             }
         }
     }

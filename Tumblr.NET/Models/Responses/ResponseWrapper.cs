@@ -10,5 +10,8 @@ namespace TumblrNET.Models.Responses
         
         [JsonPropertyName("response")]
         public required TResponse Response { get; set; }
+        
+        [JsonPropertyName("errors")]
+        public TumblrError[]? Errors { get; set; }
     }
 }

@@ -102,6 +102,40 @@ namespace TumblrNET
                 options);
         }
 
+        public async Task<ResponseWrapper<UserLikesResponse>> GetUserLikesAsync(TumblrConfiguration config,
+            UserLikesRequest request, UriParamSerializationOptions? options = null)
+        {
+            return await SendAndDeserializeRequestAsync<UserLikesRequest, UserLikesResponse>(config,
+                HttpMethod.Get,
+                request, options);
+        }
+
+        public ResponseWrapper<UserLikesResponse> GetUserLikes(TumblrConfiguration config,
+            UserLikesRequest request,
+            UriParamSerializationOptions? options = null)
+        {
+            return SendAndDeserializeRequest<UserLikesRequest, UserLikesResponse>(config, HttpMethod.Get,
+                request,
+                options);
+        }
+
+        public async Task<ResponseWrapper<UserLimitResponse>> GetUserLimitAsync(TumblrConfiguration config,
+            UserLimitsRequest request, UriParamSerializationOptions? options = null)
+        {
+            return await SendAndDeserializeRequestAsync<UserLimitsRequest, UserLimitResponse>(config,
+                HttpMethod.Get,
+                request, options);
+        }
+
+        public ResponseWrapper<UserLimitResponse> GetUserLimit(TumblrConfiguration config,
+            UserLimitsRequest request,
+            UriParamSerializationOptions? options = null)
+        {
+            return SendAndDeserializeRequest<UserLimitsRequest, UserLimitResponse>(config, HttpMethod.Get,
+                request,
+                options);
+        }
+
         public async Task<ResponseWrapper<BlogInfoResponse>> GetBlogInfoAsync(TumblrConfiguration config,
             BlogInfoRequest request, UriParamSerializationOptions? options = null)
         {
@@ -144,6 +178,22 @@ namespace TumblrNET
             UriParamSerializationOptions? options = null)
         {
             return SendAndDeserializeRequest<BlogAvatarRequest, BlogAvatarResponse>(config, HttpMethod.Get, request,
+                options);
+        }
+        
+        public async Task<ResponseWrapper<BlogBlockResponse>> GetBlogBlockListAsync(TumblrConfiguration config,
+            BlogBlockRequest request, UriParamSerializationOptions? options = null)
+        {
+            var response = await SendAndDeserializeRequestAsync<BlogBlockRequest, BlogBlockResponse>(config,
+                HttpMethod.Get,
+                request, options);
+            return response;
+        }
+
+        public ResponseWrapper<BlogBlockResponse> GetBlogBlockList(TumblrConfiguration config, BlogBlockRequest request,
+            UriParamSerializationOptions? options = null)
+        {
+            return SendAndDeserializeRequest<BlogBlockRequest, BlogBlockResponse>(config, HttpMethod.Get, request,
                 options);
         }
         

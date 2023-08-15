@@ -10,6 +10,7 @@ namespace TumblrNET.Models.Common.Blocks
     [JsonDerivedType(typeof(AudioBlock), "audio")]
     [JsonDerivedType(typeof(LinkBlock), "link")]
     [JsonDerivedType(typeof(PaywallBlock), "paywall")]
+    [JsonDerivedType(typeof(PollBlock), "poll")]
     public abstract class Block
     {
     }

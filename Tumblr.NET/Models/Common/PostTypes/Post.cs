@@ -44,7 +44,7 @@ namespace TumblrNET.Models.Common.PostTypes
         public required DateTimeOffset Timestamp { get; set; }
         
         [JsonPropertyName("date")]
-        [JsonConverter(typeof(JsonDateTimeConverter))]
+        [JsonConverter(typeof(JsonGmtStringConverter))]
         public required DateTime Date { get; set; }
         
         [JsonPropertyName("format")]

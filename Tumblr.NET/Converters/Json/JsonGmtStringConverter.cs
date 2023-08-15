@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace TumblrNET.Converters.Json
 {
-    public class JsonDateTimeConverter : JsonConverter<DateTime>
+    public class JsonGmtStringConverter : JsonConverter<DateTime>
     {
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
