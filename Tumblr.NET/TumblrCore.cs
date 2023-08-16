@@ -3,11 +3,13 @@ using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Security.Authentication;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using TumblrNET.Extensions;
 using TumblrNET.Models.Authentication;
 using TumblrNET.Models.Requests;
 using TumblrNET.Models.Requests.RequestTypes;
 using TumblrNET.Models.Requests.RequestTypes.Blog;
+using TumblrNET.Models.Requests.RequestTypes.Blog.Post.Queue;
 using TumblrNET.Models.Requests.RequestTypes.Tag;
 using TumblrNET.Models.Requests.RequestTypes.User;
 using TumblrNET.Models.Responses;
@@ -197,6 +199,17 @@ namespace TumblrNET
                 options);
         }
         
+        public void ReorderQueue(TumblrConfiguration config, QueueReorderRequest request,
+            UriParamSerializationOptions? options = null)
+        {
+            var jsonOptions = new JsonSerializerOptions()
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+            var response = SendRequest(config, HttpMethod.Post, request, JsonSerializer.Serialize(request, jsonOptions), options);
+            var responseStr = response.Content.ReadAsStringAsync().Result;
+        }
+        
         public async Task<ResponseWrapper<TaggedPostsResponse>> GetPostsWithTagAsync(TumblrConfiguration config,
             TaggedPostsRequest request, UriParamSerializationOptions? options = null)
         {
@@ -267,25 +280,37 @@ namespace TumblrNET
         }
 
         private async Task<HttpResponseMessage> SendRequestAsync<TRequest>(TumblrConfiguration config,
-            HttpMethod message, TRequest request, UriParamSerializationOptions? options = null) where TRequest : Request
+            HttpMethod message, TRequest request, string? postData = null, UriParamSerializationOptions? options = null) where TRequest : Request
         {
-            var requestMsg = GetAuthorizedRequest(config, message, request, options);
+            var requestMsg = GetAuthorizedRequest(config, message, request, postData, options);
             return await _httpClient.SendAsync(requestMsg);
         }
 
+        private async Task<HttpResponseMessage> SendRequestAsync<TRequest>(TumblrConfiguration config,
+            HttpMethod message, TRequest request, object? postData = null, UriParamSerializationOptions? options = null)
+            where TRequest : Request =>
+            await SendRequestAsync(config, message, request, JsonSerializer.Serialize(postData), options);
+
         private HttpResponseMessage SendRequest<TRequest>(TumblrConfiguration config, HttpMethod message,
-            TRequest request, UriParamSerializationOptions? options = null) where TRequest : Request
+            TRequest request, string? postData = null, UriParamSerializationOptions? options = null) where TRequest : Request
         {
-            var requestMsg = GetAuthorizedRequest(config, message, request, options);
+            var requestMsg = GetAuthorizedRequest(config, message, request, postData, options);
             return _httpClient.Send(requestMsg);
         }
 
+        private HttpResponseMessage SendRequest<TRequest>(TumblrConfiguration config, HttpMethod message,
+            TRequest request, object? postData = null, UriParamSerializationOptions? options = null)
+            where TRequest : Request => SendRequest(config, message, request, JsonSerializer.Serialize(postData), options);
+
         private HttpRequestMessage GetAuthorizedRequest<TRequest>(TumblrConfiguration config, HttpMethod message,
-            TRequest request,
+            TRequest request, string? postData = null,
             UriParamSerializationOptions? options = null) where TRequest : Request
         {
             var uri = GetRequestUri(config, request, options);
             var requestMsg = new HttpRequestMessage(message, uri);
+            
+            if (postData != null)
+                requestMsg.Content = new StringContent(postData);
 
             if (request.Auth >= AuthenticationRequirement.OAuth)
             {
@@ -325,7 +350,7 @@ namespace TumblrNET
         {
             var uriParams = request.GetParams(options);
 
-            if (request.Auth >= AuthenticationRequirement.ApiKey)
+            if (request.Auth == AuthenticationRequirement.ApiKey)
             {
                 if (MaximumAvailableAuthentication >= AuthenticationRequirement.ApiKey)
                     uriParams.AddWithConverters("api_key", ConsumerKey, options);
@@ -334,8 +359,14 @@ namespace TumblrNET
                         "This request requires an API Key to authenticate but one was not provided.");
             }
 
-            uriParams.AddWithConverters("npf", "true", options);
-            var builder = new UriBuilder(config.ApiRoot + request.ApiPath + "?" + uriParams);
+            uriParams.Add("npf", "true");
+            
+            var uriStr = config.ApiRoot + request.ApiPath;
+
+            if (uriParams.Count > 0)
+                uriStr += "?" + uriParams;
+            
+            var builder = new UriBuilder(uriStr);
             return builder.ToString();
         }
     }

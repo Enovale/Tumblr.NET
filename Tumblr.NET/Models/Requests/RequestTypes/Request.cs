@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using System.Web;
 using TumblrNET.Attributes;
 using TumblrNET.Converters.Uri;
@@ -45,10 +46,13 @@ namespace TumblrNET.Models.Requests.RequestTypes
             return nvc;
         }
 
+        [JsonIgnore]
         public abstract AuthenticationRequirement Auth { get; }
         
+        [JsonIgnore]
         public abstract string ApiPath { get; }
         
+        [JsonIgnore]
         [UriParamName("fields")]
         public Dictionary<string, string[]>? Fields { get; set; }
     }

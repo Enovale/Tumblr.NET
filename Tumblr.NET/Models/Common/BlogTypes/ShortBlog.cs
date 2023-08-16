@@ -25,7 +25,7 @@ namespace TumblrNET.Models.Common.BlogTypes
         public required string Uuid { get; set; }
         
         [JsonPropertyName("avatar")]
-        public required MediaDescription[] Avatars { get; set; }
+        public MediaDescription[]? Avatars { get; set; }
         
         [JsonPropertyName("updated")]
         [JsonConverter(typeof(JsonTimestampConverter))]

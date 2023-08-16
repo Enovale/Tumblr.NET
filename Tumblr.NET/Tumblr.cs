@@ -7,6 +7,7 @@ using TumblrNET.Models.Common.BlogTypes;
 using TumblrNET.Models.Common.PostTypes;
 using TumblrNET.Models.Requests;
 using TumblrNET.Models.Requests.RequestTypes.Blog;
+using TumblrNET.Models.Requests.RequestTypes.Blog.Post.Queue;
 using TumblrNET.Models.Requests.RequestTypes.Tag;
 using TumblrNET.Models.Requests.RequestTypes.User;
 using TumblrNET.Models.Responses;
@@ -244,6 +245,14 @@ namespace TumblrNET
             WrapResources(result);
             blog = result.Response.Blog;
             return result.Response.Posts;
+        }
+
+        // TODO This doesn't work due to a Bad Request and I Don't know why
+        // Also need to finish the async version.
+        public void ReorderQueue(string blogIdentifier, long postId, long? index = null)
+        {
+            var request = new QueueReorderRequest(blogIdentifier, postId, index);
+            _core.ReorderQueue(_tumblrConfiguration, request);
         }
 
         // TODO: Use array instead of a list

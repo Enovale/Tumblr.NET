@@ -22,7 +22,7 @@ internal class Program
         var server = new AuthServer("0.0.0.0", 8888);
         server.Start();
         _client = new Tumblr(await File.ReadAllTextAsync("apikey"), await File.ReadAllTextAsync("secret"));
-        var uri = _client.GetAuthorizationRequestUri(new [] { OAuthScope.Basic }, out _state);
+        var uri = _client.GetAuthorizationRequestUri(new [] { OAuthScope.Basic, OAuthScope.Write }, out _state);
         Console.WriteLine(uri);
         var taggedPosts = await _client.GetPostsWithTagAsync("food");
         var posts = _client.GetBlogPosts("enovale", out var blogInfo, null, null, 50);
@@ -59,5 +59,6 @@ internal class Program
         var dash = _client.GetUserDashboard(50);
         var following = await _client.GetUserFollowingAsync();
         var likes = await _client.GetUserLikesAsync();
+        _client.ReorderQueue("enovale", 725137552589406208, 0);
     }
 }
