@@ -21,12 +21,12 @@ internal class Program
     {
         var server = new AuthServer("0.0.0.0", 8888);
         server.Start();
-        _client = new Tumblr(await File.ReadAllTextAsync("apikey"), await File.ReadAllTextAsync("secret"));
+        _client = new Tumblr((await File.ReadAllLinesAsync("apikey")).First(), (await File.ReadAllLinesAsync("secret")).First());
         var uri = _client.GetAuthorizationRequestUri(new [] { OAuthScope.Basic, OAuthScope.Write }, out _state);
         Console.WriteLine(uri);
-        var taggedPosts = await _client.GetPostsWithTagAsync("food");
-        var posts = _client.GetBlogPosts("enovale", out var blogInfo, null, null, 50);
-        var asyncPostsResponse = await _client.GetBlogPostsAsync("enovale");
+        //var taggedPosts = await _client.GetPostsWithTagAsync("food");
+        //var posts = _client.GetBlogPosts("enovale", out var blogInfo, null, null, 50);
+        //var asyncPostsResponse = await _client.GetBlogPostsAsync("enovale");
 
         for (;;)
         {
@@ -55,6 +55,7 @@ internal class Program
 
         await _client.RequestAndSetOAuthTokenAsync(code);
         _user = _client.GetUserInfo();
+        var limits = _client.GetUserLimit();
         var avatarUrl = await _client.GetBlogAvatarUrlAsync("enovale");
         var dash = _client.GetUserDashboard(50);
         var following = await _client.GetUserFollowingAsync();

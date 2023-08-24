@@ -247,7 +247,7 @@ namespace TumblrNET
             if (redirectUri != null)
                 query.Add(new("redirect_uri", redirectUri));
 
-            var uri = new UriBuilder(config.ApiRoot + "/v2/oauth2/token" + "?" + query).ToString();
+            var uri = new UriBuilder(config.ApiRoot + "/v2/oauth2/token").ToString();
             var content = new FormUrlEncodedContent(query);
             var response = await _httpClient.PostAsync(uri, content);
 
